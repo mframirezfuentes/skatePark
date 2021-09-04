@@ -141,7 +141,9 @@ app.post("/autenticar", async function (req, res) {
                 data: user
                 },
                 secretKey
-             );
+             );           
+             console.log("t",token)
+
             res.send(token)
         } else {
             res.status(401).send({
@@ -151,13 +153,13 @@ app.post("/autenticar", async function (req, res) {
         }
     } else {
         res.status(404).send({
-            error: "Este usuario no esta registrado en la base de datos",
-            code: 404
-        })
+            error:"Este usuario no esta registrado en la base de datos",
+            code:404
+        })       
     }
 })
-
-app.get("datos",function (req,res) {
+ 
+app.get("/datos",function (req,res) {
     const {token} =req.query
     jwt.verify(token,secretKey,(err,decode)=>{
         const {data}=decode
@@ -171,10 +173,8 @@ app.get("datos",function (req,res) {
 
             })
         )
-        :res.send("datos",{nombre,email})
-    }
-    )
-    
+        : res.render("datos",{nombre,email})
+    }    )    
 })
 app.put("/modificar",(req,res)=>{
 
