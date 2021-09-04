@@ -112,7 +112,6 @@ app.post("/usuario", async (req, res) => {
         experiencia,
         especialidad
     } = req.body
-    console.log("info", email, nombre, password2, experiencia, especialidad)
     try {
 
         const registro = await insertar(email, nombre, password2, experiencia, especialidad, name)
@@ -135,15 +134,12 @@ app.post("/autenticar", async function (req, res) {
     const user = await autenticar(email, password)
     if (user) {
         if (user.estado) {
-            const token = jwt.sign(
-                {
-                exp: Math.floor(Date.now() / 1000) + 180,
-                data: user
+            const token = jwt.sign({
+                    exp: Math.floor(Date.now() / 1000) + 180,
+                    data: user
                 },
                 secretKey
-             );           
-             console.log("t",token)
-
+            );
             res.send(token)
         } else {
             res.status(401).send({
@@ -153,30 +149,33 @@ app.post("/autenticar", async function (req, res) {
         }
     } else {
         res.status(404).send({
-            error:"Este usuario no esta registrado en la base de datos",
-            code:404
-        })       
+            error: "Este usuario no esta registrado en la base de datos",
+            code: 404
+        })
     }
 })
- 
-app.get("/datos",function (req,res) {
-    const {token} =req.query
-    jwt.verify(token,secretKey,(err,decode)=>{
-        const {data}=decode
-        const {nombre,email}=data
-        err ?
-        res.status(401).send(
-            res.send({
-                error:"401 No autorizado",
-                message:"Usted no esta autorizado para entrar en esta página",
-                token_error: err.message
 
-            })
-        )
-        : res.render("datos",{nombre,email})
-    }    )    
+app.get("/datos", function (req, res) {
+    const {
+        token
+    } = req.query
+    jwt.verify(token, secretKey, (err, decode) => {
+        const {
+            data
+        } = decode
+        err ?
+            res.status(401).send(
+                res.send({
+                    error: "401 No autorizado",
+                    message: "Usted no esta autorizado para entrar en esta página",
+                    token_error: err.message
+
+                })
+            ) :
+            res.render("datos", data)
+    })
 })
-app.put("/modificar",(req,res)=>{
+app.put("/modificar", (req, res) => {
 
 })
 
