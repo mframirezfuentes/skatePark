@@ -9,7 +9,9 @@ const {
     insertar,
     getUsuarios,
     setUsuarioEstado,
-    autenticar
+    autenticar,
+    modificar,
+    eliminar,
 } = require('./consultas')
 
 //Inicio del servidor
@@ -132,7 +134,7 @@ app.post("/autenticar", async function (req, res) {
         password
     } = req.body
     const user = await autenticar(email, password)
-    if (user) {
+    if (user.email) {
         if (user.estado) {
             const token = jwt.sign({
                     exp: Math.floor(Date.now() / 1000) + 180,
@@ -155,7 +157,7 @@ app.post("/autenticar", async function (req, res) {
     }
 })
 
-app.get("/datos", function (req, res) {
+app.get(`/datos`, function (req, res) {
     const {
         token
     } = req.query
@@ -163,6 +165,14 @@ app.get("/datos", function (req, res) {
         const {
             data
         } = decode
+        const {
+            id,
+            email,
+            nombre,
+            password,
+            especialidad,
+            anos_experiencia
+        } = data
         err ?
             res.status(401).send(
                 res.send({
@@ -172,13 +182,51 @@ app.get("/datos", function (req, res) {
 
                 })
             ) :
-            res.render("datos", data)
+            res.render("datos", {
+                id,
+                email,
+                nombre,
+                password,
+                especialidad,
+                anos_experiencia
+            })
     })
 })
-app.put("/modificar", (req, res) => {
+app.put("/modificar", async (req, res) => {
+    
+   const { id, nombre, password1, experiencia, especialidad }=req.body
+
+   try {   
+     
+        const resultado = await modificar(id, nombre, password1, experiencia, especialidad)     
+        res.status(200).render("index")
+
+    } catch (e) {
+        res.status(500).send({
+            error: `Algo salio mal ${e}`,
+            code: 500
+        })
+    }
+   })
+ 
+  
+
+
+
+app.delete("/eliminar", async (req, res) => {
+    const {
+        token
+    } = req.query
+    const {
+        id
+    } = req.body
+    console.log("id", id)
+    const registro = await eliminar(id)
+    res.send(JSON.stringify(registro))
+    res.status(200).render("index")
+
 
 })
-
 app.get("*", (req, res) => {
     res.send("Ruta invalida")
 })

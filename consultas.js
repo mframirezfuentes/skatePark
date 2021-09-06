@@ -19,7 +19,7 @@ async function insertar(email, nombre, password2, experiencia, especialidad, nam
         console.lo(error)
         return error
     }
-} 
+}
 
 
 async function getUsuarios() {
@@ -33,18 +33,34 @@ async function getUsuarios() {
     }
 }
 
-async function setUsuarioEstado(id,estado) {
-    
-    const result= await pool.query(`UPDATE skaters SET estado=${estado} WHERE id=${id} RETURNING *;`)
+async function setUsuarioEstado(id, estado) {
+
+    const result = await pool.query(`UPDATE skaters SET estado=${estado} WHERE id=${id} RETURNING *;`)
     return result.rows[0]
 }
 
-async function autenticar(email, password) {   
+async function autenticar(email, password) {
     const result = await pool.query(`SELECT * FROM skaters WHERE email='${email}'AND password='${password}'`)
     return result.rows[0]
 }
 
+async function modificar(id, nombre, password1, experiencia, especialidad) {
+  
+    const result = await pool.query(`UPDATE skaters SET nombre='${nombre}',password='${password1}',especialidad='${especialidad}',anos_experiencia=${experiencia} WHERE id=${id} RETURNING *;`)
+    return result.rows[0]
+}
+
+async function eliminar(id) {
+    const result = await pool.query(`DELETE FROM skater where id=${id}`)
+    return result.rows[0]
+
+}
 
 module.exports = {
     insertar,
-    getUsuarios,setUsuarioEstado, autenticar}
+    getUsuarios,
+    setUsuarioEstado,
+    autenticar,
+    modificar,
+    eliminar
+}
