@@ -193,12 +193,16 @@ app.get(`/datos`, function (req, res) {
     })
 })
 app.put("/modificar", async (req, res) => {
-    
-   const { id, nombre, password1, experiencia, especialidad }=req.body
+    const {
+        id,
+        nombre,
+        password1,
+        experiencia,
+        especialidad
+    } = req.body
 
-   try {   
-     
-        const resultado = await modificar(id, nombre, password1, experiencia, especialidad)     
+    try {
+        const resultado = await modificar(id, nombre, password1, experiencia, especialidad)
         res.status(200).render("index")
 
     } catch (e) {
@@ -207,26 +211,22 @@ app.put("/modificar", async (req, res) => {
             code: 500
         })
     }
-   })
- 
-  
-
-
-
-app.delete("/eliminar", async (req, res) => {
-    const {
-        token
-    } = req.query
-    const {
-        id
-    } = req.body
-    console.log("id", id)
-    const registro = await eliminar(id)
-    res.send(JSON.stringify(registro))
-    res.status(200).render("index")
-
-
 })
+ app.delete("/delete", async (req, res) => {   
+    let {id} = req.body.source
+ 
+  try { 
+        const registro = await eliminar(id)
+        res.status(200).render("index")
+        
+    }  catch (e) {
+        res.status(500).send({
+            error: `Algo salio mal ${e}`,
+            code: 500
+        })
+    } 
+}) 
+
 app.get("*", (req, res) => {
     res.send("Ruta invalida")
 })

@@ -45,15 +45,16 @@ async function autenticar(email, password) {
 }
 
 async function modificar(id, nombre, password1, experiencia, especialidad) {
-  
+
     const result = await pool.query(`UPDATE skaters SET nombre='${nombre}',password='${password1}',especialidad='${especialidad}',anos_experiencia=${experiencia} WHERE id=${id} RETURNING *;`)
     return result.rows[0]
 }
 
-async function eliminar(id) {
-    const result = await pool.query(`DELETE FROM skater where id=${id}`)
-    return result.rows[0]
-
+async function eliminar(id) {  
+  
+    id = Number.parseInt(id)  
+    const result = await pool.query(`DELETE FROM skaters WHERE id=${id}`)
+    return result
 }
 
 module.exports = {
