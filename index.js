@@ -134,6 +134,7 @@ app.post("/autenticar", async function (req, res) {
         password
     } = req.body
     const user = await autenticar(email, password)
+    console.log("u", user.email)
     if (user.email) {
         if (user.estado) {
             const token = jwt.sign({
@@ -212,20 +213,22 @@ app.put("/modificar", async (req, res) => {
         })
     }
 })
- app.delete("/delete", async (req, res) => {   
-    let {id} = req.body.source
- 
-  try { 
+app.delete("/delete", async (req, res) => {
+    let {
+        id
+    } = req.body.source
+
+    try {
         const registro = await eliminar(id)
         res.status(200).render("index")
-        
-    }  catch (e) {
+
+    } catch (e) {
         res.status(500).send({
             error: `Algo salio mal ${e}`,
             code: 500
         })
-    } 
-}) 
+    }
+})
 
 app.get("*", (req, res) => {
     res.send("Ruta invalida")

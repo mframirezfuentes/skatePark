@@ -40,8 +40,15 @@ async function setUsuarioEstado(id, estado) {
 }
 
 async function autenticar(email, password) {
-    const result = await pool.query(`SELECT * FROM skaters WHERE email='${email}'AND password='${password}'`)
-    return result.rows[0]
+    try{
+        const result = await pool.query(`SELECT * FROM skaters WHERE email='${email}'AND password='${password}'`)
+        return result.rows[0]
+    }catch(e){
+        console.log(e)
+        return e
+    }
+            
+   
 }
 
 async function modificar(id, nombre, password1, experiencia, especialidad) {
